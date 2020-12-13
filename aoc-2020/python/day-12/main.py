@@ -12,24 +12,30 @@ dir = 0  # 0=E, 1=S. 2=W, 3=N
 dirs = 'ESWN'
 posx = 0
 posy = 0
+wayx = 10
+wayy = 1
 for inst, dist in instructions:
     if inst == 'F':
-        inst = dirs[dir]
-
-    if inst =='N':
-        posy += dist
+        posx += wayx * dist
+        posy += wayy * dist
+    elif inst =='N':
+        wayy += dist
     elif inst == 'S':
-        posy -= dist
+        wayy -= dist
     elif inst == 'E':
-        posx += dist
+        wayx += dist
     elif inst == 'W':
-        posx -= dist
+        wayx -= dist
     elif inst == 'L':
-        dir -= dist//90
-        dir = dir % 4
+        for i in range(dist//90):
+            tmp = wayx
+            wayx = -wayy
+            wayy = tmp
     elif inst == 'R':
-        dir += dist//90
-        dir = dir % 4
+        for i in range(dist//90):
+            tmp = wayx
+            wayx = wayy
+            wayy = -tmp
     else:
         raise RuntimeError(f"Bad inst {inst}")
 

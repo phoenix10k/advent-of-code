@@ -2,7 +2,7 @@
 def get_2020th_num(input_list):
     last_seen = {k:i for i, k in enumerate(input_list[:-1])}
     next_num = input_list[-1]
-    for i in range(len(input_list) - 1, 2019):
+    for i in range(len(input_list) - 1, 30000000 - 1):
         when = last_seen.get(next_num)
         last_seen[next_num] = i
         if when is None:

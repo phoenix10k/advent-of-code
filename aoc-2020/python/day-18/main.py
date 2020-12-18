@@ -25,8 +25,8 @@ def calc(tokens):
             tok_itr += 1
 
         if tokens[tok_itr] == '*':
-            op = operator.mul
-            tok_itr += 1
+            rhs, calc_itr = calc(tokens[tok_itr+1:])
+            return acc * rhs, tok_itr + calc_itr + 1
 
     return acc, tok_itr
 

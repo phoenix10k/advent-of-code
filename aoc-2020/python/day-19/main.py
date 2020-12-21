@@ -1,3 +1,6 @@
+import regex
+from functools import lru_cache
+
 rules = {}
 messages = []
 
@@ -57,5 +60,35 @@ for message in messages:
     else:
         print(message, ": valid")
         count += 1
+
+print("count:", count)
+
+
+
+@lru_cache
+def render_rule(rule_num):
+    if rule_num == 8:
+        return f'(?:{render_rule(42)})+'
+    if rule_num == 11:
+        return f'(?P<rec>{render_rule(42)}(?&rec)*{render_rule(31)})'
+    rule = rules[rule_num]
+    regex = '(?:' if len(rule) > 1 else ''
+    regex += '|'.join(''.join(
+        render_rule(p) if isinstance(p, int) else p for p in s) for s in rule)
+    if len(rule) > 1:
+        regex += ')'
+    return regex
+
+count = 0
+
+rule0 = regex.compile(render_rule(0))
+print('rule 0:', rule0)
+
+for message in messages:
+    if rule0.fullmatch(message):
+        print(message, ": valid")
+        count += 1
+    else:
+        print(message, ": no match")
 
 print("count:", count)

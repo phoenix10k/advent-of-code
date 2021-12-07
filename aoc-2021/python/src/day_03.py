@@ -1,6 +1,6 @@
 import operator
 import os
-from typing import Callable, Iterable, List, Tuple
+from typing import Any, Callable, Iterable, List, Tuple
 
 
 def parse_input(input: Iterable[str]) -> Tuple[int, List[int]]:
@@ -44,7 +44,7 @@ def calc_life_support(
     numbers: List[int],
     ones: List[int],
     num_count: int,
-    op: Callable[[int, int], bool],
+    op: Callable[[Any, Any], bool],
 ) -> int:
     filt_list = numbers.copy()
     for i in range(num_bits):
@@ -55,7 +55,6 @@ def calc_life_support(
                 filt_list,
             )
         )
-        print("filt_list:", filt_list)
         if len(filt_list) == 1:
             return filt_list[0]
         else:
@@ -67,10 +66,9 @@ def calc_life_support(
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
 
-    with open("input.txt") as input_file:
+    with open("../data/day_03.in") as input_file:
         num_bits, numbers = parse_input(input_file)
         print("num_bits:", num_bits)
-        print("numbers:", numbers)
         ones = count_ones(num_bits, numbers)
         print("ones:", ones)
 

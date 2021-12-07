@@ -36,8 +36,11 @@ def process_directions_part_2(directions: Iterable[str]) -> Tuple[int, int]:
       
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
-
-    with open("input.txt") as input_file:
+    with open("../data/day_02.in") as input_file:
+      pos, depth = process_directions(input_file)
+      print(f"Pos: {pos}, Depth: {depth}")
+      print(f"part 1: {pos*depth}")
+    with open("../data/day_02.in") as input_file:
       pos, depth = process_directions_part_2(input_file)
       print(f"Pos: {pos}, Depth: {depth}")
-      print(f"mult: {pos*depth}")
+      print(f"part 2: {pos*depth}")

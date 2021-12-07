@@ -44,6 +44,32 @@ class Map:
                 for x in range(minx, maxx + 1):
                     self.array[x, line.start.y] += 1
 
+    def draw_all(self, lines: List[Line]) -> None:
+        for line in lines:
+            if line.start.x == line.end.x:
+                miny = min(line.start.y, line.end.y)
+                maxy = max(line.start.y, line.end.y)
+                for y in range(miny, maxy + 1):
+                    self.array[line.start.x, y] += 1
+
+            elif line.start.y == line.end.y:
+                minx = min(line.start.x, line.end.x)
+                maxx = max(line.start.x, line.end.x)
+                for x in range(minx, maxx + 1):
+                    self.array[x, line.start.y] += 1
+
+            else:
+                if line.start.x < line.end.x:
+                    stepx = 1
+                else:
+                    stepx = -1
+                if line.start.y < line.end.y:
+                    stepy = 1
+                else:
+                    stepy = -1
+                for i in range(abs(line.start.x - line.end.x) + 1):
+                    self.array[line.start.x + stepx * i, line.start.y + stepy * i] += 1
+
     def print(self) -> None:
         for row in self.array:
             print("".join(str(cell) for cell in row))
@@ -78,7 +104,11 @@ if __name__ == "__main__":
         lines = parse_input(input_file)
 
     extents = get_extents(lines)
+
     map = Map(extents)
     map.draw_straight(lines)
-    map.print()
-    print("danger:", map.danger)
+    print("part 1:", map.danger)
+
+    map = Map(extents)
+    map.draw_all(lines)
+    print("part 2:", map.danger)

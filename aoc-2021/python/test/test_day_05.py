@@ -18,3 +18,9 @@ def test_part_2() -> None:
     os.chdir(os.path.dirname(__file__))
     with open("data/test_day_05.in") as input_file:
         lines = parse_input(input_file)
+
+    extents = get_extents(lines)
+    map = Map(extents)
+    map.draw_all(lines)
+    map.print()
+    assert map.danger == 12

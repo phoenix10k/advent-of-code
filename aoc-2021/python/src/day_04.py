@@ -53,6 +53,8 @@ def parse_input(input_file: TextIO) -> Tuple[List[int], List[Board]]:
         else:
             boards.append(board)
             board = Board()
+    if board.rows:
+        boards.append(board)
     return draw, boards
 
 
@@ -65,9 +67,25 @@ def get_winning_score(draw: Iterable[int], boards: List[Board]) -> int:
     raise RuntimeError("No winners")
 
 
+def get_losing_score(draw: Iterable[int], boards: List[Board]) -> int:
+    winners = 0
+    for d in draw:
+        for board in boards:
+            if not board.win:
+                board.mark(d)
+                if board.win:
+                    winners += 1
+                    if winners == len(boards):
+                        return board.score * d
+    raise RuntimeError("No losers")
+
+
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
     with open("../data/day_04.in") as input_file:
         draw, boards = parse_input(input_file)
-
     print("wining score:", get_winning_score(draw, boards))
+
+    with open("../data/day_04.in") as input_file:
+        draw, boards = parse_input(input_file)
+    print("losing score:", get_losing_score(draw, boards))

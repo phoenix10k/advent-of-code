@@ -1,6 +1,5 @@
 import os
 
-import numpy as np
 from day_06 import run_sim
 
 

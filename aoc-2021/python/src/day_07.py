@@ -2,8 +2,16 @@ import os
 from typing import List, Optional
 
 
+def tri(n: int) -> int:
+    return n * (n + 1) // 2
+
+
 def calc_fuel(positions: List[int], target: int) -> int:
     return sum(abs(p - target) for p in positions)
+
+
+def calc_fuel_2(positions: List[int], target: int) -> int:
+    return sum(tri(abs(p - target)) for p in positions)
 
 
 if __name__ == "__main__":
@@ -22,3 +30,10 @@ if __name__ == "__main__":
             best_fuel = f
 
     print("Best Fuel:", best_fuel)
+
+    best_fuel = None
+    for p in range(min_pos, max_pos + 1):
+        f = calc_fuel_2(positions, p)
+        if best_fuel is None or f < best_fuel:
+            best_fuel = f
+    print("Best Fuel 2:", best_fuel)

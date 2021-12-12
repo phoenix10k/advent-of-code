@@ -26,3 +26,10 @@ def test_part_2() -> None:
     os.chdir(os.path.dirname(__file__))
     with open("data/test_day_11.in") as input_file:
         state = parse_input(input_file)
+    step = 0
+    while True:
+        state, flashes = run_sim(state)
+        step += 1
+        if flashes == 100:
+            break
+    assert step == 195

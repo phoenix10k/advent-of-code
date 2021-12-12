@@ -49,3 +49,10 @@ if __name__ == "__main__":
         state, new_flashes = run_sim(state)
         flashes += new_flashes
     print("part 1:", flashes)
+    step += 1
+    while True:
+        state, flashes = run_sim(state)
+        step += 1
+        if flashes == 100:
+            break
+    print("part 2:", step)

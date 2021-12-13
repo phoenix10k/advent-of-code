@@ -65,8 +65,8 @@ def process_fold(grid: list[list[bool]], fold: Fold) -> list[list[bool]]:
         assert fold.position >= len(grid) // 2
         new_grid: list[list[bool]] = grid[:fold.position]
         for y in range(fold.position + 1, len(grid)):
-          for x in range(len(grid[0])):
-            grid[2* fold.position - y][x] |= grid[y][x]
+            for x in range(len(grid[0])):
+                grid[2* fold.position - y][x] |= grid[y][x]
         return new_grid
       case _:
         raise RuntimeError(f"Unknown direction: {fold.direction}")
@@ -88,3 +88,9 @@ if __name__ == "__main__":
 
     grid = process_fold(grid, folds[0])
     print("part 1:", count_grid(grid))
+
+    for fold in folds[1:]:
+        grid = process_fold(grid, fold)
+
+    print("part 2:")
+    print_grid(grid)

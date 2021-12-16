@@ -1,3 +1,5 @@
+import functools
+import operator
 import os
 from dataclasses import dataclass
 from typing import Optional
@@ -53,6 +55,26 @@ class Packet:
     def sum_versions(self) -> int:
         return self.version + sum(child.sum_versions() for child in self.children)
 
+    def calculate(self) -> int:
+        match self.packet_id:
+            case 0:
+                return sum(c.calculate() for c in self.children)
+            case 1:
+                return functools.reduce(operator.mul, (c.calculate() for c in self.children))
+            case 2:
+                return min(c.calculate() for c in self.children)
+            case 3:
+                return max(c.calculate() for c in self.children)
+            case 4:
+                return self.literal_value
+            case 5:
+                return 1 if self.children[0].calculate() > self.children[1].calculate() else 0
+            case 6:
+                return 1 if self.children[0].calculate() < self.children[1].calculate() else 0
+            case 7:
+                return 1 if self.children[0].calculate() == self.children[1].calculate() else 0
+            case _:
+                raise RuntimeError(f"Unknown type: {self.packet_id}")
 
 def hex2bin(input_hex_string: str) -> str:
     return "".join(f"{int(c, base=16):04b}" for c in input_hex_string)
@@ -66,3 +88,4 @@ if __name__ == "__main__":
 
     root, rest = Packet.from_bin_str(bin_string)
     print("part 1:", root.sum_versions())
+    print("part 2:", root.calculate())

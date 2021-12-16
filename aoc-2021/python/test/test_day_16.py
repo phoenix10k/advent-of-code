@@ -15,6 +15,7 @@ def test_part_0a() -> None:
     assert packet.children == []
     assert rest == "000"
 
+
 def test_part_0b() -> None:
     bin_str = hex2bin("38006F45291200")
     assert bin_str == "00111000000000000110111101000101001010010001001000000000"
@@ -26,6 +27,7 @@ def test_part_0b() -> None:
     assert packet.children[0].literal_value == 10
     assert packet.children[1].literal_value == 20
     assert rest == "0000000"
+
 
 def test_part_0c() -> None:
     bin_str = hex2bin("EE00D40C823060")
@@ -39,6 +41,7 @@ def test_part_0c() -> None:
     assert packet.children[1].literal_value == 2
     assert packet.children[2].literal_value == 3
     assert rest == "00000"
+
 
 @pytest.mark.parametrize(
     ("input_string", "output"),
@@ -55,7 +58,20 @@ def test_part_1(input_string: str, output: int) -> None:
     assert root.sum_versions() == output
 
 
-def test_part_2() -> None:
-    os.chdir(os.path.dirname(__file__))
-    with open("data/test_day_15.in") as input_file:
-        pass
+@pytest.mark.parametrize(
+    ("input_string", "output"),
+    [
+        ("C200B40A82", 3),
+        ("04005AC33890", 54),
+        ("880086C3E88112", 7),
+        ("CE00C43D881120", 9),
+        ("D8005AC2A8F0", 1),
+        ("F600BC2D8F", 0),
+        ("9C005AC2F8F0", 0),
+        ("9C0141080250320F1802104A08", 1),
+    ],
+)
+def test_part_2(input_string: str, output: int) -> None:
+    binary = hex2bin(input_string)
+    root, rest = Packet.from_bin_str(binary)
+    assert root.calculate() == output

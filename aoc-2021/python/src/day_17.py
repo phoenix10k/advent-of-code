@@ -87,6 +87,15 @@ def optimise_height(target: Box) -> tuple[State, int]:
     
     return best_initial_state, max_height
 
-
+def count_successes(target: Box) -> int:
+    successes = 0
+    for x in range(-200,200):
+        for y in range(-200,200):
+            _, cmp_result = evaluate_case(x, y, target)
+            if cmp_result == (0, 0):
+                successes += 1
+    return successes
+                
 if __name__ == "__main__":
     print("part 1:", optimise_height(Box(124, 174, -123, -86)))
+    print("part 2:", count_successes(Box(124, 174, -123, -86)))

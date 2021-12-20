@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass, field
-from typing import TextIO
+from itertools import combinations
+from typing import Any, TextIO
 
 import numpy as np
 from parse import parse
@@ -70,7 +71,7 @@ def parse_input(input_file: TextIO) -> list[Scanner]:
     return scanners
 
 
-def build_map(scanners: list[Scanner]) -> set[Vector3]:
+def build_map(scanners: list[Scanner]) -> set[tuple[Any, ...]]:
     full_map = {tuple(b) for b in scanners[0].beacons}
     scanners[0].done = True
     while not all(scanner.done for scanner in scanners):
@@ -110,6 +111,14 @@ def build_map(scanners: list[Scanner]) -> set[Vector3]:
     return full_map
 
 
+def max_dist(scanners: list[Scanner]) -> int:
+    max_dist = 0
+    for s1, s2 in combinations(scanners, 2):
+        dist = sum(abs(s1.position - s2.position))
+        max_dist = max(max_dist, dist)
+    return max_dist
+
+
 if __name__ == "__main__":
     os.chdir(os.path.dirname(__file__))
 
@@ -118,3 +127,5 @@ if __name__ == "__main__":
 
     full_map = build_map(scanners)
     print("part 1:", len(full_map))
+
+    print("part 2:", max_dist(scanners))

@@ -1,4 +1,4 @@
-import copy
+import functools
 from dataclasses import dataclass
 from itertools import cycle, islice
 
@@ -29,7 +29,7 @@ def play_game(p1_start: int, p2_start: int) -> tuple[int, int, int]:
     return p1_score, p2_score, rolls
 
 
-@dataclass
+@dataclass(frozen=True)
 class State:
     p1_place: int = 0
     p2_place: int = 0
@@ -50,43 +50,39 @@ POSSIBLE_ROLLS = [
 
 
 def evolve_state(state: State, roll: int) -> State:
-    next_state = copy.copy(state)
-    if next_state.p1_turn:
-        next_state.p1_place += roll
-        next_state.p1_place = ((next_state.p1_place - 1) % 10) + 1
-        next_state.p1_score += next_state.p1_place
-        next_state.p1_turn = False
+    if state.p1_turn:
+        new_place = ((state.p1_place + roll - 1) % 10) + 1
+        next_state = State(
+            new_place, state.p2_place, state.p1_score + new_place, state.p2_score, False
+        )
     else:
-        next_state.p2_place += roll
-        next_state.p2_place = ((next_state.p2_place - 1) % 10) + 1
-        next_state.p2_score += next_state.p2_place
-        next_state.p1_turn = True
+        new_place = ((state.p2_place + roll - 1) % 10) + 1
+        next_state = State(
+            state.p1_place, new_place, state.p1_score, state.p2_score + new_place, True
+        )
     return next_state
 
 
-def play_game_2(p1_start: int, p2_start: int) -> tuple[int, int]:
+@functools.lru_cache(maxsize=100000)
+def calc_wins(state: State) -> tuple[int, int]:
+    if state.p1_score >= 21:
+        return 1, 0
+    if state.p2_score >= 21:
+        return 0, 1
     p1_wins = 0
     p2_wins = 0
-
-    states = [(State(p1_start, p2_start), 1)]
-    win_states: list[tuple[State, int]] = []
-    while states:
-        states = [
-            (evolve_state(state[0], roll[0]), roll[1] * state[1])
-            for roll in POSSIBLE_ROLLS
-            for state in states
-        ]
-        win_states.extend(
-            s for s in states if s[0].p1_score >= 21 or s[0].p2_score >= 21
-        )
-        states = [s for s in states if s[0].p1_score < 21 and s[0].p2_score < 21]
-        print("states:", states)
-        print("win_states:", win_states)
-
-    p1_wins = sum(s[1] for s in win_states if s[0].p1_score >= 21)
-    p2_wins = sum(s[1] for s in win_states if s[0].p2_score >= 21)
-
+    for roll, count in POSSIBLE_ROLLS:
+        new_state = evolve_state(state, roll)
+        p1w, p2w = calc_wins(new_state)
+        p1_wins += p1w * count
+        p2_wins += p2w * count
+    print(f"wins for state {state}: p1:{p1_wins}, p2:{p2_wins}")
+    print("cache info:", calc_wins.cache_info())
     return p1_wins, p2_wins
+
+
+def play_game_2(p1_start: int, p2_start: int) -> tuple[int, int]:
+    return calc_wins(State(p1_start, p2_start))
 
 
 if __name__ == "__main__":
